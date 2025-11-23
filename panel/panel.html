@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=person" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=document_search" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=person" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=docs" />
+
+    
+
+        <!-- Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+  
+
+   
+    <link rel="stylesheet" href="index_styles.css">
+    <link rel="stylesheet" href="/panel/modal_styles.css">
+
+    <title>Document</title>
+</head>
+<body>
+   <header>
+        <div class = "title">
+            <img src="/assets/menu.png" alt="" class = "menu_icon">
+            <img src="/assets/logo_contapp.png" alt="" class = "logo">
+            <h2>Contapp</h2>
+        </div>
+        
+    
+        <input type="text" class = "busqueda" placeholder="Encuentra tus proyectos">
+        <img src="/assets/user.png" alt="" class = "user_icon">
+
+
+   </header>
+
+   <div class = "description">
+     <p style = "margin-top: 40px; margin-left: 30px; font-weight: 400">Iniciar nuevo documento</p>
+     <p style = "margin-right: 30px; margin-top: 40px; font-weight: 600;">Explora</p>
+   </div>
+
+   <div class = "categorias">
+        <div class = "contenedor" id = "balance_button">
+            <div class = "area_icono">
+                <img src="/assets/balance.png" alt="" class = "icono_categoria">
+            </div>
+            <div class = "area_nombre">
+                <p>Balance General</p> 
+            </div>
+
+        </div>
+
+        <!------------------------------>
+
+        <div class = "contenedor">
+            <div class = "area_icono" id = "resultados_button">
+                <img src="/assets/resultados.png" alt="" class = "icono_categoria">
+            </div>
+            <div class = "area_nombre">
+                <p>Estado de Resultados</p>
+            </div>
+
+        </div>
+        <!------------------------------>
+
+        <div class = "contenedor" id = "flujo_button">
+            <div class = "area_icono">
+                <img src="/assets/flujo.png" alt="" class="icono_categoria" >
+            </div>
+            <div class = "area_nombre">
+                <p>Flujo de efectivo</p>
+            </div>
+
+        </div>
+        <!------------------------------>
+
+        <div class = "contenedor" id = "porcientos_button">
+            <div class = "area_icono">
+                <img src="/assets/porcientos.png" alt="" class="icono_categoria">
+            </div>
+            <div class = "area_nombre">
+                <p>Porcientos integrales</p>
+            </div>
+
+        </div>
+
+    
+   </div>
+
+
+    <dialog class = "balance_modal">
+        <p style="font-weight: 600; margin-bottom: 10px;">Nuevo Balance General</p>
+        <p style="color: #0d9b6c; font-weight: 300; font-size: 14px;">Configura los datos escenciales para tu nuevo proyecto</p>
+
+        <form action="" class = "form_balance_modal">
+        <p style="font-weight: 600; margin-top: 30px; color: #095f42de; font-size: 14px;">Nombre de la empresa</p>
+        
+        <input type="text" class = "modal_input" placeholder="Ej: Salchipapa Corporation S.A">
+
+         
+       
+        <div class = "selects">
+            
+            <div class = "anios1">
+                <p style="font-weight: 600; font-size: 14px; color: #095f42de">Año inicial</p>
+                <div class = "selector">
+                    <p class = "anio_seleccionado">Seleccionar</p>
+                       <img src="/assets/arrow_down (1).png" alt="" class = "arrow">
+                </div>
+                
+                <ul class = "lista_anios">
+                    
+                </ul>
+            </div>
+
+            <div class = "anios1">
+                <p style="font-weight: 600; font-size: 14px; color: #095f42de;">Año final</p>
+                <div class = "selector" id = 'selector2'>
+                    <p class = "anio_seleccionado" id = 'anio_seleccionado2' >Seleccionar</p>
+                       <img src="/assets/arrow_down (1).png" alt="" class = "arrow">
+                </div>
+                
+                <ul class = "lista_anios" id = "lista_anios2">
+                    
+                </ul>
+            </div>
+        </div>
+
+
+
+        <div class = "currency_box">
+            <p style="font-weight: 600; font-size: 14px; color: #095f42de; margin-top: 16px;">Tipo de moneda</p>
+
+            <div class = "selector_currency">
+                 <p class = "selected_currency">Seleccionar moneda</p>
+                 <img src="/assets/arrow_down (1).png" alt="" class = "arrow_select">
+
+                
+            </div>
+                <ul class = "lista_currency">
+                   
+                </ul>
+           
+        </div>
+
+
+        <div class = "buttons_modal">
+            <div class = "dismiss_button"> 
+                Cancelar
+            </div>
+            <input type="submit" id = "submit_balance">
+        </div>
+        
+
+        </form>
+   </dialog>
+    
+
+
+
+
+   
+
+   <script src="modal_script.js"></script>
+
+   <p style="margin: 30px;">Archivos recientes</p>
+        <div class = "archivos_recientes">
+            <div class = "icon_container">
+                <span class="material-symbols-outlined" id = "icon_archivos">
+                    docs
+                </span>
+            </div>
+                
+            
+        </div>
+   
+   
+
+</body>
+</html>
