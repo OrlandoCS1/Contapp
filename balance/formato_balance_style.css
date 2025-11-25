@@ -1,0 +1,52 @@
+.encabezado_balance{
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(to  right,  #009966, #00bb7c);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.encabezado_balance{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.encabezado_balance h1{
+    color: white;
+}
+
+.encabezado_balance p{
+    color: white;
+}
+
+.date_balance_general{
+    display: flex;
+    gap: 5px;
+}
+
+
+.balance_context{
+    width: 100%;
+    border: 1px solid black;
+    
+    
+}
+
+table{
+    border: 1px solid black;
+}
+
+.main_columns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.activo_circulante{
+    display: flex;
+    justify-content: space-between;
+}

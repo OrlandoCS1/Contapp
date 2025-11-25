@@ -165,7 +165,7 @@ ul{
     align-items: flex-end;
     justify-content: end;
     --border: 1px solid black;
-    margin-top: 7vh;
+    margin-top: 3vh;
 }
 
 .dismiss_button{ 
@@ -190,6 +190,7 @@ ul{
     border-radius: 7px;
     color: white;
     font-weight: 700;
+    text-align: center;
 }
 
 .lista_currency{

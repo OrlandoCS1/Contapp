@@ -22,7 +22,7 @@ class Balance {
 const balanceButton = document.querySelector('#balance_button');
 const resultadosButton = document.querySelector('#resultados_button');
 const balanceModal = document.querySelector('.balance_modal');
-
+const flujoButton = document.querySelector('#flujo_button');
 
 /*
 //TODO agregar los demás contenedores de Flujo de Efectivo
@@ -74,7 +74,7 @@ llenarSelectAnios2();
 */
 //balanceModal.showModal();
 
-balanceButton.addEventListener('click', () =>{
+flujoButton.addEventListener('click', () =>{
     balanceModal.showModal();
 });
 

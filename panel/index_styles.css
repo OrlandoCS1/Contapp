@@ -123,6 +123,10 @@ header h2 {
     height: 150px;
 }
 
+.contenedor:nth-child(1){
+    background-color: #fbfbfb;
+}
+
 .icono_categoria {
     --border: 1px solid black ;
     margin-top: 20px;
