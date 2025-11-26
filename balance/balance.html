@@ -155,6 +155,11 @@
                         </div>
                     </td>
                 </tr>
+                <tr class="total_activo_circulante_section">
+                    <td >Total activo circulante</td>
+                    <td><p class = 'total_anio_inicio_activo_circulante'>$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_activo_circulante">$0.00</p></td>
+                </tr>
 
                 <tr class="activo_noCirculante_section">
                     <td colspan="5">Activo no Circulante</td>
@@ -172,10 +177,10 @@
                         </div>
                     </td>
                      <td>
-                        <input type="text" class = "anioInicial_input_activo_noCirculante" placeholder="$0">
+                        <input type="number" class = "anioInicial_input_activo_noCirculante" placeholder="$0">
                     </td>
                     <td>
-                        <input type="text" class = "anioFinal_input_activo_noCirculante" placeholder="$0"> 
+                        <input type="number" class = "anioFinal_input_activo_noCirculante" placeholder="$0"> 
                     </td>
                     <td colspan="2" class = "button_row">
                         <div class = "agrega_cuenta_button" id = "agrega_button_activo_noCirculante" >
@@ -183,11 +188,16 @@
                         </div>
                     </td>
                 </tr>
+                <tr class="total_activo_circulante_section">
+                    <td >Total activo no circulante</td>
+                    <td><p class = '.total_anio_inicio_activo_circulante'>$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_activo_circulante">$0.00</p></td>
+                </tr>
 
                 <tr class="total_activo_section">
-                    <td >TOTAL ACTIVO</td>
-                    <td><p class = "total_anio_inicio_activo">$0.00</p></td>
-                    <td colspan="3"><p class = "total_anio_final_activo">$0.00</p></td>
+                    <td >TOTAL ACTIVO </td>
+                    <td><p class = "total_activo_anioInicio">$0.00</p></td>
+                    <td colspan="3"><p class = "total_activo_anioFinal">$0.00</p></td>
                 </tr>
 
                 <tr class="pasivo_section">
@@ -210,16 +220,21 @@
                         </div>
                     </td>
                      <td>
-                        <input type="text" class = "anioInicial_input_pasivo_cortoPlazo" placeholder="$0">
+                        <input type="number" class = "anioInicial_input_pasivo_cortoPlazo" placeholder="$0">
                     </td>
                     <td>
-                        <input type="text" class = "anioFinal_input_pasivo_cortoPlazo" placeholder="$0"> 
+                        <input type="number" class = "anioFinal_input_pasivo_cortoPlazo" placeholder="$0"> 
                     </td>
                     <td colspan="2" class = "button_row">
                         <div class = "agrega_cuenta_button" id = "agrega_button_pasivo_cortoPlazo">
                             Agregar +
                         </div>
                     </td>
+                </tr>
+                <tr class="total_activo_circulante_section">
+                    <td >Total pasivo corto plazo</td>
+                    <td><p class = 'total_anio_inicio_pasivo_cortoPlazo'>$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_pasivo_cortoPlazo">$0.00</p></td>
                 </tr>
                 
 
@@ -239,10 +254,10 @@
                         </div>
                     </td>
                      <td>
-                        <input type="text" class = "anioInicial_input_pasivo_largoPlazo" placeholder="$0">
+                        <input type="number" class = "anioInicial_input_pasivo_largoPlazo" placeholder="$0">
                     </td>
                     <td>
-                        <input type="text" class = "anioFinal_input_pasivo_largoPlazo" placeholder="$0"> 
+                        <input type="number" class = "anioFinal_input_pasivo_largoPlazo" placeholder="$0"> 
                     </td>
                     <td colspan="2" class = "button_row">
                         <div class = "agrega_cuenta_button" id = "agrega_button_pasivo_largoPlazo">
@@ -250,11 +265,16 @@
                         </div>
                     </td>
                 </tr>
+                <tr class="total_activo_circulante_section">
+                    <td >Total pasivo largo plazo</td>
+                    <td><p class = 'total_anio_inicio_pasivo_largoPlazo'>$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_pasivo_largoPlazo">$0.00</p></td>
+                </tr>
 
                 <tr class="total_pasivo_section">
                     <td>TOTAL PASIVO</td>
-                    <td><p class = "total_anio_inicio_activo">$0.00</p></td>
-                    <td colspan="3"><p class = "total_anio_final_activo">$0.00</p></td>
+                    <td><p class = "total_anio_inicio_pasivo">$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_pasivo">$0.00</p></td>
                 </tr>
 
                 <tr class="patrimonio_section">
@@ -279,10 +299,10 @@
                         </div>
                     </td>
                      <td>
-                        <input type="text" class = "anioInicial_input_capital" placeholder="$0">
+                        <input type="number" class = "anioInicial_input_capital" placeholder="$0">
                     </td>
                     <td>
-                        <input type="text" class = "anioFinal_input_capital" placeholder="$0"> 
+                        <input type="number" class = "anioFinal_input_capital" placeholder="$0"> 
                     </td>
                     <td colspan="2" class = "button_row">
                         <div class = "agrega_cuenta_button" id = "agrega_button_capital">
@@ -293,8 +313,8 @@
 
                 <tr class="total_patrimonio">
                     <td >TOTAL PASIVO Y PATRIMONIO</td>
-                    <td><p class = "total_anio_inicio_activo">$0.00</p></td>
-                    <td colspan="3"><p class = "total_anio_final_activo">$0.00</p></td>
+                    <td><p class = "total_anio_inicio_capital">$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_capital">$0.00</p></td>
                 </tr>
 
 

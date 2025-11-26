@@ -139,38 +139,32 @@ const agregaButtons = [
 ];
 
 const sectionDivs = [
-    '.activo_circulante_section_div',
-    '.activo_noCirculante_section_div',
-    '.pasivo_cortoPlazo_section_div',
-    '.pasivo_largoPlazo_section_div',
-    '.patrimonio_section_div'
+    {clase: '.activo_circulante_section_div', tipo: '.activo_circulante'},
+    {clase: '.activo_noCirculante_section_div', tipo: '.activo_noCirculante'},
+    {clase: '.pasivo_cortoPlazo_section_div', tipo: '.pasivo_cortoPlazo'},
+    {clase: '.pasivo_largoPlazo_section_div', tipo: '.pasivo_largoPlazo'},
+    {clase: '.patrimonio_section_div', tipo: '.capital'},
 ];
 
 const inputs = [
-    {clase: '.anioInicial_input_activo_circulante', tipo: '.activo_circulante'},
-    {clase: '.anioFinal_input_activo_circulante' ,tipo: '.activo_circulante'},
+    {clase: '.anioInicial_input_activo_circulante', tipo: '.activo_circulante', anio: 'inicio'},
+    {clase: '.anioFinal_input_activo_circulante' ,tipo: '.activo_circulante', anio: 'final'},
 
-    {clase: '.anioInicial_input_activo_noCirculante', tipo: '.activo_noCirculante'},
-    {clase: '.anioFinal_input_activo_noCirculante', tipo: '.activo_noCirculante'},
+    {clase: '.anioInicial_input_activo_noCirculante', tipo: '.activo_noCirculante' , anio: 'inicio'},
+    {clase: '.anioFinal_input_activo_noCirculante', tipo: '.activo_noCirculante', anio: 'final'},
 
-    {clase: '.anioInicial_input_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo'},
-    {clase: '.anioFinal_input_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo'},
+    {clase: '.anioInicial_input_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo' , anio: 'inicio'},
+    {clase: '.anioFinal_input_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo' , anio: 'final'},
 
 
-    {clase: '.anioInicial_input_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo'},
-    {clase: '.anioFinal_input_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo'},
+    {clase: '.anioInicial_input_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo' , anio: 'inicio'},
+    {clase: '.anioFinal_input_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo' , anio: 'final'},
     
-    {clase: '.anioInicial_input_capital', tipo: '.capital'},
-    {clase: '.anioFinal_input_capital', tipo: '.capital'}
+    {clase: '.anioInicial_input_capital', tipo: '.capital',anio: 'inicio' },
+    {clase: '.anioFinal_input_capital', tipo: '.capital' , anio: 'final'}
 ];
 
-const tipos = [
-    '.activo_circulante',
-    '.activo_noCirculante',
-    '.pasivo_cortoPlazo',
-    '.pasivo_largoPlazo',
-    '.capital'
-];
+
 
 
 const selects = [
@@ -181,13 +175,52 @@ const selects = [
     '.select_capital_contable'
 ];
 
+const tipos = [
+    '.activo_circulante',
+    '.activo_noCirculante',
+    '.pasivo_cortoPlazo',
+    '.pasivo_largoPlazo',
+    '.capital'
+];
+
+const totales = [
+ {total: '.total_anio_inicio_activo_circulante', tipo: '.activo_circulante'},
+ {total:'.total_anio_final_activo_circulante', tipo: '.activo_circulante'},
+ {total:'.total_anio_inicio_activo_noCirculante', tipo: '.activo_noCirculante'},
+ {total:'.total_anio_final_activo_noCirculante', tipo: '.activo_noCirculante'},
+
+ {total:'.total_anio_inicio_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo'},
+ {total:'.total_anio_final_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo'},
+  {total:'.total_anio_inicio_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo'},
+ {total:'.total_anio_final_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo'},
+
+
+ {total:'.total_anio_inicio_capital', tipo: '.capital'},
+ {total:'.total_anio_final_capital', tipo: '.capital'},
+]
+
+const totalesGenerales = [
+  {total: '.total_activo_anioInicio', tipo: '.activo'},
+  {total: '.total_activo_anioFinal', tipos: '.activo'}, 
+
+  {total: '.total_anio_inicio_pasivo', tipos: '.pasivo'},
+  {total: '.total_anio_final_pasivo', tipos: '.pasivo'},
+
+  {total: '.total_anio_inicio_capital', tipos: '.capital'},
+  {total: '.total_anio_final_capital', tipos: '.capital'},
+];
+
+
+
+
 
 agregaButtons.forEach((button, index) => {
     let agregaBoton = document.querySelector(button);
     let select = document.querySelector(selects[index])
-    let tableBody = document.querySelector(sectionDivs[index]);
+    let tableBody = document.querySelector(sectionDivs[index].clase);
     let tipoCuenta = tipos[index];
 
+    
     let aniosTuple = [];
 
 
@@ -205,6 +238,10 @@ agregaButtons.forEach((button, index) => {
         let valorAnioInicio = aniosTuple[0].value;
         let valorAnioFinal = aniosTuple[1].value;
 
+
+        let calc = valorAnioInicio - valorAnioFinal ;
+        
+
         let nuevoCampo = document.createElement('tr');
 
         let concepto = document.createElement('td');
@@ -213,7 +250,10 @@ agregaButtons.forEach((button, index) => {
         let variacion = document.createElement('td');
         let slotSign = document.createElement('td');
 
-        let calc = valorAnioInicio - valorAnioFinal ;
+        anioInicio.className = 'anioInicio';
+        anioFinal.className = 'anioFinal';
+
+      
 
         concepto.textContent = cuenta;
         anioInicio.textContent = formateador.format(valorAnioInicio);
@@ -237,12 +277,118 @@ agregaButtons.forEach((button, index) => {
         nuevoCampo.appendChild(variacion);
         nuevoCampo.appendChild(slotSign);
 
+        
 
         tableBody.appendChild(nuevoCampo);
 
         aniosTuple = [];
 
+
+
+
+        let allInputs = document.querySelectorAll('input');
+        allInputs.forEach(input => input.value = '');
+
+
+
+        let totalInicioSum = 0;
+        let totalFinalSum = 0;
+
+
+        let filas = tableBody.querySelectorAll('tr');
+
+        filas.forEach(fila => {
+            let tdInicio = fila.querySelector('.anioInicio');
+            let tdFinal = fila.querySelector('.anioFinal');
+
+            if (!tdInicio || !tdFinal) return;
+
+  
+            let numInicio = Number(tdInicio.textContent.replace(/[^\d.-]+/g, ""));
+            let numFinal  = Number(tdFinal.textContent.replace(/[^\d.-]+/g, ""));
+
+            totalInicioSum += isNaN(numInicio) ? 0 : numInicio;
+            totalFinalSum += isNaN(numFinal) ? 0 : numFinal;
+        });
+
+
+
+        totales.forEach(totalObj => {
+            if (totalObj.tipo === tipoCuenta) {
+                let target = document.querySelector(totalObj.total);
+
+                if (totalObj.total.includes("inicio")) {
+                    target.textContent = formateador.format(totalInicioSum);
+                } else {
+                    target.textContent = formateador.format(totalFinalSum);
+                }
+            }
+        });
+
+        calcularTotalesGenerales();
+
+      
+
+
+        
         
     });
 
+
+
+
+    
+
+
+
 });
+
+
+function calcularTotalesGenerales() {
+
+    // Función auxiliar para obtener suma inicio/final por categoría
+    function obtenerSumaPorCategoria(categorias) {
+        let sumaInicio = 0;
+        let sumaFinal = 0;
+
+        totales.forEach(obj => {
+            if (categorias.includes(obj.tipo)) {
+                let elemento = document.querySelector(obj.total);
+                if (!elemento) return;
+
+                let valor = Number(elemento.textContent.replace(/[^\d.-]+/g, ""));
+                
+                if (obj.total.includes("inicio")) {
+                    sumaInicio += valor;
+                } else {
+                    sumaFinal += valor;
+                }
+            }
+        });
+
+        return { inicio: sumaInicio, final: sumaFinal };
+    }
+
+    // === SUMAS POR GRUPO ===
+    let activos = obtenerSumaPorCategoria(['.activo_circulante', '.activo_noCirculante']);
+    let pasivos = obtenerSumaPorCategoria(['.pasivo_cortoPlazo', '.pasivo_largoPlazo']);
+    let capital = obtenerSumaPorCategoria(['.capital']);
+
+    // === ACTUALIZAR TOTALES GENERALES EN DOM ===
+    const colocar = (selector, valor) => {
+        let nodo = document.querySelector(selector);
+        if (nodo) nodo.textContent = formateador.format(valor);
+    };
+
+    // Activos
+    colocar('.total_activo_anioInicio', activos.inicio);
+    colocar('.total_activo_anioFinal', activos.final);
+
+    // Pasivos
+    colocar('.total_pasivo_anioInicio', pasivos.inicio);
+    colocar('.total_pasivo_anioFinal', pasivos.final);
+
+    // Capital
+    colocar('.total_capital_anioInicio', capital.inicio);
+    colocar('.total_capital_anioFinal', capital.final);
+}
