@@ -35,18 +35,155 @@
     
 }
 
-table{
+.table_balance{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table_balance td{
     border: 1px solid black;
+    padding: 15px;
 }
 
-.main_columns {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 20px;
+.table_balance input{
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(65, 65, 65, 0.274);
+    outline-color: #009966;
+    background-color: rgba(199, 199, 199, 0.233);
 }
 
-.activo_circulante{
-    display: flex;
-    justify-content: space-between;
+.headers_balance td{
+    border: none;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.concepto_column{
+    width: 400px;
+}
+
+
+.activo_section{
+    background: linear-gradient(to left, rgb(255, 80, 27), rgb(255, 136, 0) );
+    color: white;
+    font-weight: 600;
+}
+
+.activo_circulante_section{
+
+    background: linear-gradient(to left, rgb(255, 255, 255), rgba(255, 136, 0, 0.089) );
+    font-style: italic;
+    
+}
+
+.activo_noCirculante_section{
+    background: linear-gradient(to left, rgb(255, 255, 255), rgba(255, 136, 0, 0.089) );
+    font-style: italic;
+}
+
+.total_activo_section{
+     background: linear-gradient(to left, rgba(255, 60, 0, 0.26), rgba(255, 136, 0, 0.644) );
+    color: white;
+    font-weight: 600;
+}
+
+
+.pasivo_section{
+    background: linear-gradient(to left, rgb(0, 140, 255), rgb(0, 140, 255) );
+    color: white;
+    font-weight: 600;
+}
+
+.pasivo_cortoPlazo_section{
+     background: linear-gradient(to left, rgba(0, 140, 255, 0.11), rgba(0, 140, 255, 0.274) );
+    font-style: italic;
+}
+
+.pasivo_largoPlazo_section{
+    background: linear-gradient(to left, rgba(0, 140, 255, 0.11), rgba(0, 140, 255, 0.274) );
+    font-style: italic;
+}
+
+.total_pasivo_section{
+    background: linear-gradient(to left, rgba(0, 140, 255, 0.377), rgba(0, 140, 255, 0.596) );
+    color: white;
+    font-weight: 600;
+}
+
+
+.patrimonio_section{
+    background: linear-gradient(to left, rgb(255, 230, 0), rgb(255, 187, 0) );
+    color: white;
+    font-weight: 600;
+}
+
+.capital_section{
+    background: linear-gradient(to left, rgba(255, 230, 0, 0.185), rgba(255, 187, 0, 0.13) );
+    font-style: italic;
+}
+
+.total_patrimonio{
+    background: linear-gradient(to left, rgba(255, 230, 0, 0.596), rgba(255, 187, 0, 0.651) );
+    color: white;
+    font-weight: 600;
+}
+
+#select_cuenta{
+    padding: 10px;
+    margin: 5px;
+    width: 300px;
+    border: 1 px solid rgba(172, 172, 172, 0.425);
+    border-radius: 8px;
+    
+    background-color: rgba(199, 199, 199, 0.233);
+    outline: none;
+    border: none;
+}
+
+.add_control td{
+    padding: 0;
+    border: none;
+}
+
+option{
+    background-color: white;
+    border: none;
+    outline: none;
+ 
+}
+
+
+.anioInicial_input{
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(65, 65, 65, 0.274);
+    outline-color: #009966;
+    background-color: rgba(199, 199, 199, 0.233);
+}
+
+.anioFinal_input{
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(65, 65, 65, 0.274);
+    outline-color: #009966;
+    background-color: rgba(199, 199, 199, 0.233);
+}
+
+
+
+.agrega_cuenta_button{
+    background-color: rgb(255, 80, 27);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 120px;
+    text-align: center;
+    margin-left: 25%;
+    box-shadow: 0 3px 10px rgba(102, 102, 102, 0.438);
+    
+}
+
+.agrega_cuenta_button:hover{
+     background-color: rgb(255, 95, 46);
 }

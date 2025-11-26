@@ -97,41 +97,212 @@
                 <div class = "date_balance_general">
                     <p>Del 31 de Diciembre de</p>
                     <p class = "anio_inicio_label"></p>
-                    <p>al 31 de diciembre de</p>
+                    <p>al 31 de Diciembre de</p>
                     <p class = "anio_termino_label"></p>
                 </div>
             </div>
 
-            <div class = "format_content">
-                <table class = "balance_context">
-                    <tr class = "main_columns">
-                        <th>Concepto</th>
-                        <th class = "anio_inicio_header_table"></th>
-                        <th class = "anio_termino_header_table"></th>
-                        <th class = "variacion_column">Variación</th>
-                        <th class = "">Tipo de Cuenta</th>
-                    </tr>
+            <table class = "table_balance">
+                <tr class = "headers_balance">
+                    <td class = "concepto_column">
+                        Concepto
+                    </td>
+                    <td>
+                        2023
+                    </td>
+                    <td>
+                        2024
+                    </td>
+                    <td>
+                        Variacion
+                    </td>
+                    <td>
+                        +/-
+                    </td>
+                </tr>
+
+                <tr class="activo_section">
+                    <td colspan="5">ACTIVO</td>
+                </tr>
+
+                <tr class="activo_circulante_section">
+                    <td colspan="5">Activo Circulante</td>
+
+                </tr>
+                <tbody class = "activo_circulante_section_div">
+
+                </tbody>
+            
+                <tr class = "add_control">
+                    <td>
+                        <div class = "select_cuenta_container" id = "select_activo_circulante">
+                            <select name="" class="select_activo_circulante" id = "select_cuenta">
+                                
+                            </select>
+                        </div>
+                    </td>
+
+
+                    <td>
+                        <input type="text" class = "anioInicial_input_activo_circulante" placeholder="$0">
+                    </td>
+                    <td> 
+                        <input type="text" class = "anioFinal_input_activo_circulante" placeholder="$0"> 
+                    </td>
+                    <td colspan="2" class = "button_row">
+                        <div class = "agrega_cuenta_button" id = "agrega_button_activo_circulante">
+                            Agregar  +
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="activo_noCirculante_section">
+                    <td colspan="5">Activo no Circulante</td>
+                </tr>
+
+                <tbody class="activo_noCirculante_section_div">
+
+                </tbody>
+                <tr class = "add_control">
+                    <td>
+                        <div class = "select_cuenta_container">
+                            <select name="" class="select_activo_noCirculante" id = "select_cuenta">
+                                
+                            </select>
+                        </div>
+                    </td>
+                     <td>
+                        <input type="text" class = "anioInicial_input_activo_noCirculante" placeholder="$0">
+                    </td>
+                    <td>
+                        <input type="text" class = "anioFinal_input_activo_noCirculante" placeholder="$0"> 
+                    </td>
+                    <td colspan="2" class = "button_row">
+                        <div class = "agrega_cuenta_button" id = "agrega_button_activo_noCirculante" >
+                            Agregar +
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="total_activo_section">
+                    <td >TOTAL ACTIVO</td>
+                    <td><p class = "total_anio_inicio_activo">$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_activo">$0.00</p></td>
+                </tr>
+
+                <tr class="pasivo_section">
+                    <td colspan="5">PASIVO</td>
+                </tr>
+
+                <tr class="pasivo_cortoPlazo_section">
+                    <td colspan="5">Pasivo a corto plazo</td>
+                </tr>
+                <tbody class="pasivo_cortoPlazo_section_div">
                     
-                    <tr>
-                        <td>
-                            ACTIVO
-                        </td>
-                    </tr>
-                   
-                    <tr>
-                        <td>
+                </tbody>
 
-                        </td>
-                    </tr>
+                <tr class = "add_control">
+                    <td>
+                        <div class = "select_cuenta_container">
+                            <select name="" class="select_pasivo_cortoPlazo" id = "select_cuenta">
+                                
+                            </select>
+                        </div>
+                    </td>
+                     <td>
+                        <input type="text" class = "anioInicial_input_pasivo_cortoPlazo" placeholder="$0">
+                    </td>
+                    <td>
+                        <input type="text" class = "anioFinal_input_pasivo_cortoPlazo" placeholder="$0"> 
+                    </td>
+                    <td colspan="2" class = "button_row">
+                        <div class = "agrega_cuenta_button" id = "agrega_button_pasivo_cortoPlazo">
+                            Agregar +
+                        </div>
+                    </td>
+                </tr>
+                
+
+                <tr class="pasivo_largoPlazo_section">
+                    <td colspan="5">Pasivo a largo plazo</td>
+                </tr>
+                 <tbody class="pasivo_largoPlazo_section_div">
+                    
+                 </tbody>
+                
+                <tr class = "add_control">
+                    <td>
+                        <div class = "select_cuenta_container">
+                            <select name="" class="select_pasivo_largo_plazo" id = "select_cuenta">
+                                
+                            </select>
+                        </div>
+                    </td>
+                     <td>
+                        <input type="text" class = "anioInicial_input_pasivo_largoPlazo" placeholder="$0">
+                    </td>
+                    <td>
+                        <input type="text" class = "anioFinal_input_pasivo_largoPlazo" placeholder="$0"> 
+                    </td>
+                    <td colspan="2" class = "button_row">
+                        <div class = "agrega_cuenta_button" id = "agrega_button_pasivo_largoPlazo">
+                            Agregar +
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="total_pasivo_section">
+                    <td>TOTAL PASIVO</td>
+                    <td><p class = "total_anio_inicio_activo">$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_activo">$0.00</p></td>
+                </tr>
+
+                <tr class="patrimonio_section">
+                    <td colspan="5">PATRIMONIO</td>
+                </tr>
+
+                
+
+                <tr class="capital_section">
+                    <td colspan="5">Capital contable</td>
+                </tr>
+                
+                <tbody class = "patrimonio_section_div">
+
+                </tbody>
+                <tr class = "add_control">
+                    <td>
+                        <div class = "select_cuenta_container">
+                            <select name="" class="select_capital_contable" id = "select_cuenta">
+                                
+                            </select>
+                        </div>
+                    </td>
+                     <td>
+                        <input type="text" class = "anioInicial_input_capital" placeholder="$0">
+                    </td>
+                    <td>
+                        <input type="text" class = "anioFinal_input_capital" placeholder="$0"> 
+                    </td>
+                    <td colspan="2" class = "button_row">
+                        <div class = "agrega_cuenta_button" id = "agrega_button_capital">
+                            Agregar +
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="total_patrimonio">
+                    <td >TOTAL PASIVO Y PATRIMONIO</td>
+                    <td><p class = "total_anio_inicio_activo">$0.00</p></td>
+                    <td colspan="3"><p class = "total_anio_final_activo">$0.00</p></td>
+                </tr>
 
 
-                </table>
-            </div>
-
-
+            </table>
         </div>
     </div>
     
     <script src="/balance/balance.js"></script>
+    <script src="/balance/balance_scripts/select_script.js"></script>
 </body>
 </html>

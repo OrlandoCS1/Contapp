@@ -15,3 +15,18 @@ fechaTermino.textContent = "2025";
 
 anioInicioHeader.textContent = "2024";
 anioTerminoHeader.textContent = "2025"
+
+
+
+/*
+const selectActivoCircualnte = document.querySelector('.select_activo_circulante');
+const selectActivoNoCirculante = document.querySelector('.select_activo_noCirculante');
+
+const selectPasivoCortoPlazo = document.querySelector('.select_pasivo_cortoPlazo');
+const selectPasivoLargoPlazo = document.querySelector('.select_pasivo_largo_plazo');
+
+const selectCapitalContable = document.querySelector('.select_capital_contable');
+
+anioInicial_input_pasivo_largoPlazo
+*/
+

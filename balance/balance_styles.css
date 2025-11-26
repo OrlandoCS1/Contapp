@@ -21,7 +21,7 @@
 .formato{
     margin-top: 30px;
     width: 100%;
-    height: 100%;
+    height: auto;
     border-radius: 20px;
     border: 2px solid rgb(0, 0, 0);
 }
@@ -75,9 +75,6 @@
     width: 165px;
 }
 
-#format_button_icon{
-    
-}
 
 
 .progress_indicator_container{
@@ -171,3 +168,5 @@
 .graph div:nth-child(5) .ball{
     background-color: #c4c4c4;
 }
+
+
