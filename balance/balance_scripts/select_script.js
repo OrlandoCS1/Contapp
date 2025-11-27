@@ -124,271 +124,349 @@ capitalContableMap.forEach((cuenta) => {
 
 
 
+// balance.js (POO) — pegar completo
+
+// ----------------- Formateador -----------------
 const formateador = new Intl.NumberFormat('es-MX', {
   style: 'currency',
-  currency: 'MXN', // Código de moneda de la ISO 4217
-  minimumFractionDigits: 2, // Mínimo de decimales
+  currency: 'MXN',
+  minimumFractionDigits: 2,
 });
 
+// ----------------- Clase Movimiento -----------------
+class Movimiento {
+  constructor({ cuenta, anioInicio = 0, anioFinal = 0, tipo, subtipo }) {
+    this.cuenta = String(cuenta || '');
+    this.anioInicio = Number(anioInicio) || 0;
+    this.anioFinal = Number(anioFinal) || 0;
+    this.tipo = tipo;       // '.activo_circulante' etc (clave para la sección)
+    this.subtipo = subtipo; // 'activo' | 'pasivo' | 'capital' (agrupador)
+  }
+
+  get variacion() {
+    return this.anioInicio - this.anioFinal;
+  }
+
+  get icono() {
+    const v = this.variacion;
+    if (v > 0) return '<i class="bi bi-graph-up-arrow"></i>';
+    if (v < 0) return '<i class="bi bi-graph-down-arrow"></i>';
+    return '<i class="bi bi-reception-0"></i>';
+  }
+}
+
+// ----------------- Clase Balance -----------------
+class Balance {
+  constructor() {
+    this.sections = {
+      '.activo_circulante': [],
+      '.activo_noCirculante': [],
+      '.pasivo_cortoPlazo': [],
+      '.pasivo_largoPlazo': [],
+      '.capital': []
+    };
+  }
+
+  addMovimiento(mov) {
+    if (!(mov instanceof Movimiento)) return;
+    if (!this.sections[mov.tipo]) {
+      console.warn('Tipo desconocido al agregar movimiento', mov.tipo);
+      return;
+    }
+    this.sections[mov.tipo].push(mov);
+  }
+
+  // Retorna suma inicio/final para una sección tipo (ej: '.activo_circulante')
+  totalsBySection(tipo) {
+    const arr = this.sections[tipo] || [];
+    return arr.reduce((acc, m) => {
+      acc.inicio += m.anioInicio;
+      acc.final  += m.anioFinal;
+      return acc;
+    }, { inicio: 0, final: 0 });
+  }
+
+  // Totales generales: activos (dos tipos), pasivos (dos tipos), capital (uno)
+  totalsGenerales() {
+    const activosCir = this.totalsBySection('.activo_circulante');
+    const activosNo  = this.totalsBySection('.activo_noCirculante');
+    const pasivoCP    = this.totalsBySection('.pasivo_cortoPlazo');
+    const pasivoLP    = this.totalsBySection('.pasivo_largoPlazo');
+    const capital     = this.totalsBySection('.capital');
+
+    return {
+      activos: {
+        inicio: activosCir.inicio + activosNo.inicio,
+        final:  activosCir.final  + activosNo.final
+      },
+      pasivos: {
+        inicio: pasivoCP.inicio + pasivoLP.inicio,
+        final:  pasivoCP.final  + pasivoLP.final
+      },
+      capital: {
+        inicio: capital.inicio,
+        final:  capital.final
+      }
+    };
+  }
+}
+
+// ----------------- Utilitarios DOM -----------------
+const parseNumberFromText = text => {
+  if (!text && text !== 0) return 0;
+  return Number(String(text).replace(/[^\d.-]+/g, "")) || 0;
+};
+
+// Devuelve el primer nodo existente entre las opciones
+const findExisting = (...selectors) => {
+  for (const s of selectors) {
+    const n = document.querySelector(s);
+    if (n) return n;
+  }
+  return null;
+};
+
+// ----------------- Mapeo entre tipo -> tbody y totales (asegúrate que clases HTML coincidan) -----------------
+const sectionMap = {
+  '.activo_circulante': {
+    tbody: '.activo_circulante_section_div',
+    totalInicio: '.total_anio_inicio_activo_circulante',
+    totalFinal:  '.total_anio_final_activo_circulante'
+  },
+  '.activo_noCirculante': {
+    tbody: '.activo_noCirculante_section_div',
+    totalInicio: '.total_anio_inicio_activo_noCirculante',
+    totalFinal:  '.total_anio_final_activo_noCirculante'
+  },
+  '.pasivo_cortoPlazo': {
+    tbody: '.pasivo_cortoPlazo_section_div',
+    totalInicio: '.total_anio_inicio_pasivo_cortoPlazo',
+    totalFinal:  '.total_anio_final_pasivo_cortoPlazo'
+  },
+  '.pasivo_largoPlazo': {
+    tbody: '.pasivo_largoPlazo_section_div',
+    totalInicio: '.total_anio_inicio_pasivo_largoPlazo',
+    totalFinal:  '.total_anio_final_pasivo_largoPlazo'
+  },
+  '.capital': {
+    // Soporta ambos nombres por si tu HTML usa "patrimonio_section_div"
+    tbody: findExisting('.patrimonio_section_div', '.capital_section_div', '.patrimonio_section_div'),
+    totalInicio: '.total_anio_inicio_capital',
+    totalFinal:  '.total_anio_final_capital'
+  }
+};
+
+// ----------------- Instancia global del Balance -----------------
+const balance = new Balance();
+
+// ----------------- Selectores base (según tu estructura) -----------------
 const agregaButtons = [
-    '#agrega_button_activo_circulante',
-    '#agrega_button_activo_noCirculante',
-    '#agrega_button_pasivo_cortoPlazo',
-    '#agrega_button_pasivo_largoPlazo',
-    '#agrega_button_capital'
+  '#agrega_button_activo_circulante',
+  '#agrega_button_activo_noCirculante',
+  '#agrega_button_pasivo_cortoPlazo',
+  '#agrega_button_pasivo_largoPlazo',
+  '#agrega_button_capital'
 ];
-
-const sectionDivs = [
-    {clase: '.activo_circulante_section_div', tipo: '.activo_circulante'},
-    {clase: '.activo_noCirculante_section_div', tipo: '.activo_noCirculante'},
-    {clase: '.pasivo_cortoPlazo_section_div', tipo: '.pasivo_cortoPlazo'},
-    {clase: '.pasivo_largoPlazo_section_div', tipo: '.pasivo_largoPlazo'},
-    {clase: '.patrimonio_section_div', tipo: '.capital'},
-];
-
-const inputs = [
-    {clase: '.anioInicial_input_activo_circulante', tipo: '.activo_circulante', anio: 'inicio'},
-    {clase: '.anioFinal_input_activo_circulante' ,tipo: '.activo_circulante', anio: 'final'},
-
-    {clase: '.anioInicial_input_activo_noCirculante', tipo: '.activo_noCirculante' , anio: 'inicio'},
-    {clase: '.anioFinal_input_activo_noCirculante', tipo: '.activo_noCirculante', anio: 'final'},
-
-    {clase: '.anioInicial_input_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo' , anio: 'inicio'},
-    {clase: '.anioFinal_input_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo' , anio: 'final'},
-
-
-    {clase: '.anioInicial_input_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo' , anio: 'inicio'},
-    {clase: '.anioFinal_input_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo' , anio: 'final'},
-    
-    {clase: '.anioInicial_input_capital', tipo: '.capital',anio: 'inicio' },
-    {clase: '.anioFinal_input_capital', tipo: '.capital' , anio: 'final'}
-];
-
-
-
 
 const selects = [
-    '.select_activo_circulante',
-    '.select_activo_noCirculante',
-    '.select_pasivo_cortoPlazo',
-    '.select_pasivo_largo_plazo',
-    '.select_capital_contable'
+  '.select_activo_circulante',
+  '.select_activo_noCirculante',
+  '.select_pasivo_cortoPlazo',
+  '.select_pasivo_largo_plazo',
+  '.select_capital_contable'
 ];
 
+// Inputs por tipo para localizar los inputs correspondientes
+const inputsPorTipo = {
+  '.activo_circulante': {
+    inicio: '.anioInicial_input_activo_circulante',
+    final:  '.anioFinal_input_activo_circulante'
+  },
+  '.activo_noCirculante': {
+    inicio: '.anioInicial_input_activo_noCirculante',
+    final:  '.anioFinal_input_activo_noCirculante'
+  },
+  '.pasivo_cortoPlazo': {
+    inicio: '.anioInicial_input_pasivo_cortoPlazo',
+    final:  '.anioFinal_input_pasivo_cortoPlazo'
+  },
+  '.pasivo_largoPlazo': {
+    inicio: '.anioInicial_input_pasivo_largoPlazo',
+    final:  '.anioFinal_input_pasivo_largoPlazo'
+  },
+  '.capital': {
+    inicio: '.anioInicial_input_capital',
+    final:  '.anioFinal_input_capital'
+  }
+};
+
+// ----------------- Funciones de actualización DOM -----------------
+
+// Renderiza (append) una fila en el tbody asociado a `tipo`
+function renderRowForMovimiento(mov) {
+  const cfg = sectionMap[mov.tipo];
+  if (!cfg) {
+    console.warn('No hay configuración de sección para tipo', mov.tipo);
+    return;
+  }
+
+  // resolución de tbody (cfg.tbody puede ser selector o nodo)
+  let tbodyNode = null;
+  if (typeof cfg.tbody === 'string') tbodyNode = document.querySelector(cfg.tbody);
+  else tbodyNode = cfg.tbody; // si findExisting devolvió el nodo para capital
+
+  if (!tbodyNode) {
+    console.warn('No se encontró tbody para', mov.tipo, cfg);
+    return;
+  }
+
+  const tr = document.createElement('tr');
+
+  const tdConcepto = document.createElement('td');
+  tdConcepto.textContent = mov.cuenta;
+
+  const tdInicio = document.createElement('td');
+  tdInicio.className = 'anioInicio';
+  tdInicio.textContent = formateador.format(mov.anioInicio);
+
+  const tdFinal = document.createElement('td');
+  tdFinal.className = 'anioFinal';
+  tdFinal.textContent = formateador.format(mov.anioFinal);
+
+  const tdVariacion = document.createElement('td');
+  tdVariacion.textContent = formateador.format(mov.variacion);
+
+  const tdIcon = document.createElement('td');
+  tdIcon.innerHTML = mov.icono;
+
+  tr.appendChild(tdConcepto);
+  tr.appendChild(tdInicio);
+  tr.appendChild(tdFinal);
+  tr.appendChild(tdVariacion);
+  tr.appendChild(tdIcon);
+
+  tbodyNode.appendChild(tr);
+}
+
+// Calcula y actualiza totales de una sección en DOM (y retorna los valores)
+function updateSectionTotalsDOM(tipo) {
+  const cfg = sectionMap[tipo];
+  if (!cfg) return { inicio: 0, final: 0 };
+
+  // Obtener valores desde el objeto Balance (fuente de la verdad)
+  const totals = balance.totalsBySection(tipo);
+
+  // Actualizar nodos
+  const nodoInicio = document.querySelector(cfg.totalInicio);
+  const nodoFinal  = document.querySelector(cfg.totalFinal);
+
+  if (nodoInicio) nodoInicio.textContent = formateador.format(totals.inicio);
+  if (nodoFinal)  nodoFinal.textContent  = formateador.format(totals.final);
+
+  return totals;
+}
+
+// Actualiza todos los totales generales en DOM (activos, pasivos, capital)
+function updateAllTotalsDOM() {
+  const g = balance.totalsGenerales();
+
+  const put = (sel, val) => {
+    const n = document.querySelector(sel);
+    if (n) n.textContent = formateador.format(val);
+  };
+
+  // Asegúrate de que en tu HTML existan estos selectores:
+  put('.total_activo_anioInicio', g.activos.inicio);
+  put('.total_activo_anioFinal',  g.activos.final);
+
+  put('.total_pasivo_anioInicio', g.pasivos.inicio);
+  put('.total_pasivo_anioFinal',  g.pasivos.final);
+
+  put('.total_capital_anioInicio', g.capital.inicio);
+  put('.total_capital_anioFinal',  g.capital.final);
+
+  // opcional: total pasivo + patrimonio si quieres comparar
+  const totalPyPInicio = g.pasivos.inicio + g.capital.inicio;
+  const totalPyPFinal  = g.pasivos.final  + g.capital.final;
+  put('.total_pasivo_patrimonio_inicio', totalPyPInicio);
+  put('.total_pasivo_patrimonio_final',  totalPyPFinal);
+}
+
+// ----------------- Conexión con UI: listeners para botones -----------------
+
+// array paralelo de tipos (indice corresponde a agregaButtons y selects)
 const tipos = [
-    '.activo_circulante',
-    '.activo_noCirculante',
-    '.pasivo_cortoPlazo',
-    '.pasivo_largoPlazo',
-    '.capital'
+  '.activo_circulante',
+  '.activo_noCirculante',
+  '.pasivo_cortoPlazo',
+  '.pasivo_largoPlazo',
+  '.capital'
 ];
 
-const totales = [
- {total: '.total_anio_inicio_activo_circulante', tipo: '.activo_circulante'},
- {total:'.total_anio_final_activo_circulante', tipo: '.activo_circulante'},
- {total:'.total_anio_inicio_activo_noCirculante', tipo: '.activo_noCirculante'},
- {total:'.total_anio_final_activo_noCirculante', tipo: '.activo_noCirculante'},
-
- {total:'.total_anio_inicio_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo'},
- {total:'.total_anio_final_pasivo_cortoPlazo', tipo: '.pasivo_cortoPlazo'},
-  {total:'.total_anio_inicio_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo'},
- {total:'.total_anio_final_pasivo_largoPlazo', tipo: '.pasivo_largoPlazo'},
-
-
- {total:'.total_anio_inicio_capital', tipo: '.capital'},
- {total:'.total_anio_final_capital', tipo: '.capital'},
-]
-
-const totalesGenerales = [
-  {total: '.total_activo_anioInicio', tipo: '.activo'},
-  {total: '.total_activo_anioFinal', tipos: '.activo'}, 
-
-  {total: '.total_anio_inicio_pasivo', tipos: '.pasivo'},
-  {total: '.total_anio_final_pasivo', tipos: '.pasivo'},
-
-  {total: '.total_anio_inicio_capital', tipos: '.capital'},
-  {total: '.total_anio_final_capital', tipos: '.capital'},
-];
+agregaButtons.forEach((btnSelector, idx) => {
+  const btn = document.querySelector(btnSelector);
+  if (!btn) {
+    console.warn('Botón no encontrado:', btnSelector);
+    return;
+  }
 
 
 
+  btn.addEventListener('click', () => {
+    const tipo = tipos[idx];
 
+    // obtener cuenta desde el select correspondiente
+    const selectNode = document.querySelector(selects[idx]);
+    const cuenta = selectNode ? (selectNode.value || selectNode.options[selectNode.selectedIndex]?.text || 'Cuenta') : 'Cuenta';
 
-agregaButtons.forEach((button, index) => {
-    let agregaBoton = document.querySelector(button);
-    let select = document.querySelector(selects[index])
-    let tableBody = document.querySelector(sectionDivs[index].clase);
-    let tipoCuenta = tipos[index];
-
-    
-    let aniosTuple = [];
-
-
-    agregaBoton.addEventListener('click', () => {
-        inputs.forEach((input) => {
-            if(tipoCuenta == input.tipo){
-                console.log('entrando al bloque de código');
-                aniosTuple.push(document.querySelector(input.clase));
-            }
-        });
-
-        console.log(aniosTuple)
-    
-        let cuenta = select.value;
-        let valorAnioInicio = aniosTuple[0].value;
-        let valorAnioFinal = aniosTuple[1].value;
-
-
-        let calc = valorAnioInicio - valorAnioFinal ;
-        
-
-        let nuevoCampo = document.createElement('tr');
-
-        let concepto = document.createElement('td');
-        let anioInicio = document.createElement('td');
-        let anioFinal = document.createElement('td');
-        let variacion = document.createElement('td');
-        let slotSign = document.createElement('td');
-
-        anioInicio.className = 'anioInicio';
-        anioFinal.className = 'anioFinal';
-
-      
-
-        concepto.textContent = cuenta;
-        anioInicio.textContent = formateador.format(valorAnioInicio);
-        anioFinal.textContent = formateador.format(valorAnioFinal);
-        variacion.textContent = formateador.format(calc);
-
-
-        
-        
-        if(calc > 0){
-        slotSign.innerHTML = '<i class="bi bi-graph-up-arrow"></i>';
-            } else if(calc < 0){
-        slotSign.innerHTML = '<i class="bi bi-graph-down-arrow"></i>';
-             } else {
-        slotSign.innerHTML = '<i class="bi bi-reception-0"></i>'
-        }
-
-        nuevoCampo.appendChild(concepto);
-        nuevoCampo.appendChild(anioInicio);
-        nuevoCampo.appendChild(anioFinal);
-        nuevoCampo.appendChild(variacion);
-        nuevoCampo.appendChild(slotSign);
-
-        
-
-        tableBody.appendChild(nuevoCampo);
-
-        aniosTuple = [];
-
-
-
-
-        let allInputs = document.querySelectorAll('input');
-        allInputs.forEach(input => input.value = '');
-
-
-
-        let totalInicioSum = 0;
-        let totalFinalSum = 0;
-
-
-        let filas = tableBody.querySelectorAll('tr');
-
-        filas.forEach(fila => {
-            let tdInicio = fila.querySelector('.anioInicio');
-            let tdFinal = fila.querySelector('.anioFinal');
-
-            if (!tdInicio || !tdFinal) return;
-
-  
-            let numInicio = Number(tdInicio.textContent.replace(/[^\d.-]+/g, ""));
-            let numFinal  = Number(tdFinal.textContent.replace(/[^\d.-]+/g, ""));
-
-            totalInicioSum += isNaN(numInicio) ? 0 : numInicio;
-            totalFinalSum += isNaN(numFinal) ? 0 : numFinal;
-        });
-
-
-
-        totales.forEach(totalObj => {
-            if (totalObj.tipo === tipoCuenta) {
-                let target = document.querySelector(totalObj.total);
-
-                if (totalObj.total.includes("inicio")) {
-                    target.textContent = formateador.format(totalInicioSum);
-                } else {
-                    target.textContent = formateador.format(totalFinalSum);
-                }
-            }
-        });
-
-        calcularTotalesGenerales();
-
-      
-
-
-        
-        
-    });
-
-
-
-
-    
-
-
-
-});
-
-
-function calcularTotalesGenerales() {
-
-    // Función auxiliar para obtener suma inicio/final por categoría
-    function obtenerSumaPorCategoria(categorias) {
-        let sumaInicio = 0;
-        let sumaFinal = 0;
-
-        totales.forEach(obj => {
-            if (categorias.includes(obj.tipo)) {
-                let elemento = document.querySelector(obj.total);
-                if (!elemento) return;
-
-                let valor = Number(elemento.textContent.replace(/[^\d.-]+/g, ""));
-                
-                if (obj.total.includes("inicio")) {
-                    sumaInicio += valor;
-                } else {
-                    sumaFinal += valor;
-                }
-            }
-        });
-
-        return { inicio: sumaInicio, final: sumaFinal };
+    // obtener inputs para ese tipo
+    const selInputs = inputsPorTipo[tipo];
+    if (!selInputs) {
+      console.warn('Inputs no definidos para', tipo);
+      return;
     }
 
-    // === SUMAS POR GRUPO ===
-    let activos = obtenerSumaPorCategoria(['.activo_circulante', '.activo_noCirculante']);
-    let pasivos = obtenerSumaPorCategoria(['.pasivo_cortoPlazo', '.pasivo_largoPlazo']);
-    let capital = obtenerSumaPorCategoria(['.capital']);
+    const inputInicio = document.querySelector(selInputs.inicio);
+    const inputFinal  = document.querySelector(selInputs.final);
 
-    // === ACTUALIZAR TOTALES GENERALES EN DOM ===
-    const colocar = (selector, valor) => {
-        let nodo = document.querySelector(selector);
-        if (nodo) nodo.textContent = formateador.format(valor);
-    };
+    const rawInicio = inputInicio ? inputInicio.value : '';
+    const rawFinal  = inputFinal  ? inputFinal.value  : '';
 
-    // Activos
-    colocar('.total_activo_anioInicio', activos.inicio);
-    colocar('.total_activo_anioFinal', activos.final);
+    const anioInicio = parseNumberFromText(rawInicio);
+    const anioFinal  = parseNumberFromText(rawFinal);
 
-    // Pasivos
-    colocar('.total_pasivo_anioInicio', pasivos.inicio);
-    colocar('.total_pasivo_anioFinal', pasivos.final);
+    // Crear movimiento y agregar al model
+    const mov = new Movimiento({
+      cuenta,
+      anioInicio,
+      anioFinal,
+      tipo,
+      subtipo: tipo.startsWith('.activo') ? 'activo' : (tipo.startsWith('.pasivo') ? 'pasivo' : 'capital')
+    });
 
-    // Capital
-    colocar('.total_capital_anioInicio', capital.inicio);
-    colocar('.total_capital_anioFinal', capital.final);
-}
+    balance.addMovimiento(mov);
+
+    // Render en DOM
+    renderRowForMovimiento(mov);
+
+    // Actualizar totales de sección y los totales generales
+    updateSectionTotalsDOM(tipo);
+    updateAllTotalsDOM();
+
+    // Limpiar inputs usados
+    if (inputInicio) inputInicio.value = '';
+    if (inputFinal)  inputFinal.value  = '';
+  });
+});
+
+// ----------------- Inicialización opcional -----------------
+// Si quieres precalcular totales existentes en HTML al cargar:
+document.addEventListener('DOMContentLoaded', () => {
+  // Si ya existen filas en DOM (por edición previa), podemos escanearlas y poblar el Balance
+  // (esto es opcional y está comentado). Si lo quieres activo, descomenta.
+
+  // scanExistingRowsAndPopulateBalance();
+});
+
+// Puedes añadir una función que lea filas existentes en los tbody y llene el model.
+// function scanExistingRowsAndPopulateBalance() { ... } // opcional
