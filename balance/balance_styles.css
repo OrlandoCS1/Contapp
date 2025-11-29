@@ -24,6 +24,7 @@
     height: auto;
     border-radius: 20px;
     border: 2px solid rgb(0, 0, 0);
+
 }
 
 .acciones{
@@ -169,4 +170,121 @@
     background-color: #c4c4c4;
 }
 
+.progress_buttons{
+    margin-right: 20px;
+}
 
+.buttons_progress_container{
+    display: flex;
+    --border: 1px solid black;
+    gap: 45px;
+}
+
+
+.previous_step{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+
+    background-color: #00bb7c;
+}
+.progress_buttons{
+    display: flex;
+    flex-direction: column;
+}
+.next_step{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+
+    background-color: #009966;
+}
+
+.buttons_progress_labels{
+    display: flex;
+    gap: 30px;
+    margin-top: 5px;
+}
+
+.buttons_progress_labels p{
+    font-size: 14px;
+}
+
+/****************************************************** ESTADO DE RESULTADOS***********************************************/
+:root {
+--verde-fuerte: #009966;
+--verde-claro: #00bb7c;
+--gris-claro: #f4f4f4;
+--gris-oscuro: #333;
+}
+
+.estado{
+    background: var(--gris-claro);
+    margin: 0;
+    padding: 20px;
+    color: var(--gris-oscuro);
+}
+
+.title_estado{
+    text-align: center;
+    color: var(--verde-fuerte);
+}
+
+.subtitulo_estado{
+    background: var(--verde-fuerte);
+    color: white;
+    font-weight: bold;
+}
+
+.table_estado{
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.table_estado th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.table_estado th{
+    background: var(--verde-claro);
+    color: white;
+    text-align: left;
+}
+
+.table_estado input[type="number"] {
+    width: 120px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.table_estado select {
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.table_estado .btn {
+    background: var(--verde-fuerte);
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.table_estado .btn:hover {
+    background: var(--verde-claro);
+}

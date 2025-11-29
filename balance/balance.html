@@ -87,6 +87,22 @@
             </div>
                 
         </div>
+        <div class = "progress_buttons">
+            <div class = "buttons_progress_container">
+                <div class = "previous_step" >
+                    <i class="bi bi-arrow-left"></i>  
+                </div>
+                <div class = "next_step">
+                    <i class="bi bi-arrow-right"></i>  
+                </div>
+            </div>
+            <div class="buttons_progress_labels">
+                <p>Anterior</p>
+                <p>Siguiente</p>
+            </div>
+            
+          
+        </div>
     </div>
     <div class = "main_container">
         
@@ -320,9 +336,103 @@
 
             </table>
         </div>
+
+        <div class = "estado">
+           <h1 class = "title_estado">Estado de resultados</h1>
+           <p></p>
+
+            <table class = "table_estado">
+                <tr class="subtitulo_estado"><th colspan="3">Ingresos</th></tr>
+                    <tr>
+                    <td>Ventas</td>
+                    <td><input type="number" id="ventas" /></td>
+                </tr>
+
+
+            <tr class="subtitulo"><th colspan="3">Costo de Ventas</th></tr>
+                <tr><td>Inventario inicial</td><td><input type="number" id="invInicial"></td></tr>
+                    <tr><td>Compras</td><td><input type="number" id="compras"></td></tr>
+                        <tr><td><strong>Mercancías disponibles</strong></td><td id="mercDisp">$0.00</td></tr>
+                    <tr><td>Inventario final</td><td><input type="number" id="invFinal"></td></tr>
+                <tr><td><strong>Costo de lo vendido</strong></td><td id="costoVendido">$0.00</td></tr>
+            <tr><td><strong>Utilidad bruta</strong></td><td id="utilidadBruta">$0.00</td></tr>
+
+            <tr class="subtitulo"><th colspan="3">Gastos de Operación</th></tr>
+
+
+            <tbody id="tablaGastos"></tbody>
+
+
+            <tr>
+            <td colspan="3">
+                <select id="tipoGasto">
+                    <option value="venta">Gasto de venta</option>
+                    <option value="admin">Gasto de administración</option>
+                    <option value="noOperacional">Gasto no operacional</option>
+                </select>
+
+
+            <input type="text" id="nombreGasto" placeholder="Nombre del gasto" />
+            <input type="number" id="montoGasto" placeholder="Monto" />
+
+            <!--
+                <button class="btn" onclick="agregarGasto()">Agregar gasto</button>
+            -->
+            <button class="btn" id="btnAgregarGasto">Agregar gasto</button>
+            </td>
+            </tr>
+
+
+            <tr><td><strong>Total gastos de operación</strong></td><td id="totalGastos">$0.00</td></tr>
+            <tr><td><strong>Utilidad de operación</strong></td><td id="utilidadOperacion">$0.00</td></tr>
+
+            <tr class="subtitulo"><th colspan="3">Gastos Financieros</th></tr>
+            <tr>
+                <td>Gastos financieros</td>
+                <td><input type="number" id="gastosFinancieros" /></td>
+            </tr>
+
+
+            <!-- Gastos No Operacionales -->
+            <tr class="subtitulo"><th colspan="3">Gastos No Operacionales</th></tr>
+                <tr>
+                <td>Gastos no operacionales</td>
+                <td><input type="number" id="gastosNoOperacionales" /></td>
+            </tr>
+
+            <tr>
+                <td><strong>Utilidad antes de impuesto y reserva</strong></td>
+                <td id="utilidadAntesImpuestoReserva">$0.00</td>
+            </tr>
+
+
+            <tr class="subtitulo"><th colspan="3">Reserva Legal</th></tr>
+
+            <tr>
+                <td>Monto de reserva legal</td>
+                <td><input type="number" id="reservaLegalInput" /></td>
+            </tr>
+
+
+            <tr><td><strong>Reserva legal</strong></td><td id="reserva">$0.00</td></tr>
+            <tr><td><strong>Utilidad antes de impuestos</strong></td><td id="utilidadAntesImpuestos">$0.00</td></tr>
+            </table>
+        </div>
+        <div class = "flujo">
+            <div>
+                Flujo de efectivo
+            </div>
+        </div>
+    </div>
+
+    <div class = "process_buttons">
+        
+
     </div>
     
     <script src="/balance/balance.js"></script>
     <script src="/balance/balance_scripts/select_script.js"></script>
+    <script src="/balance/pasos.js"></script>
+    <script src="/balance/estado/estado_script.js"></script>
 </body>
 </html>
