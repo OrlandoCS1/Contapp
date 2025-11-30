@@ -62,6 +62,8 @@ const capitalContableMap = [
   { cuenta: "Utilidad del ejercicio", tipo: "Capital" }
 ];
 
+//ESPACIO PARA COLOCAR LOS ARREGLOS DE CUENTAS CON SU VARIACION"""
+
 
 
 
@@ -77,6 +79,7 @@ const selectCapitalContable = document.querySelector('.select_capital_contable')
 
 activosCirculantesMap.map((cuenta) => {
     let option = document.createElement('option');
+    option.id = cuenta.cuenta
     option.value = cuenta.cuenta;
     option.innerText = cuenta.cuenta;
     selectActivoCircualnte.appendChild(option);
@@ -85,6 +88,7 @@ activosCirculantesMap.map((cuenta) => {
 
 activosNoCirculantesMap.map((cuenta) => {
     let option = document.createElement('option');
+    option.id = cuenta.cuenta
     option.value = cuenta.cuenta;
     option.innerText = cuenta.cuenta;
     selectActivoNoCirculante.appendChild(option);
@@ -93,6 +97,7 @@ activosNoCirculantesMap.map((cuenta) => {
 
 pasivoCortoPlazoMap.map((cuenta) => {
     let option = document.createElement('option');
+    option.id = cuenta.cuenta
     option.value = cuenta.cuenta;
     option.innerText = cuenta.cuenta;
     selectPasivoCortoPlazo.appendChild(option);
@@ -100,6 +105,7 @@ pasivoCortoPlazoMap.map((cuenta) => {
 
 pasivoLargoPlazoMap.map((cuenta) => {
     let option = document.createElement('option');
+    option.id = cuenta.cuenta
     option.value = cuenta.cuenta;
     option.innerText = cuenta.cuenta;
     selectPasivoLargoPlazo.appendChild(option);
@@ -109,11 +115,13 @@ let i = 0;
 capitalContableMap.forEach((cuenta) => {
   if(cuenta == "--Capital Contribuido--" || cuenta == "--Capital Ganado--"){
     let option = document.createElement('option');
+    option.id = cuenta.cuenta
     option.disabled = true;
     option.innerText = cuenta.cuenta;
     selectCapitalContable.appendChild(option)
   } else {
     let option = document.createElement('option');
+    option.id = cuenta.cuenta
     option.value = cuenta.cuenta;
     option.innerText = cuenta.cuenta;
   selectCapitalContable.appendChild(option);
@@ -122,6 +130,12 @@ capitalContableMap.forEach((cuenta) => {
 
 });
 
+// ----------------- Arreglos para Flujo -----------------
+let arrActivosCirculantes = [];
+let arrActivosNoCirculantes = [];
+let arrPasivoCortoPlazo = [];
+let arrPasivoLargoPlazo = [];
+let arrCapitalFlujo = [];
 
 
 // balance.js (POO) — pegar completo
@@ -144,7 +158,7 @@ class Movimiento {
   }
 
   get variacion() {
-    return this.anioInicio - this.anioFinal;
+    return  this.anioFinal - this.anioInicio;
   }
 
   get icono() {
@@ -300,6 +314,19 @@ const inputsPorTipo = {
   }
 };
 
+// Tipo contable para flujo
+const tipoFlujoMap = {
+  '.activo_circulante': "Operacion",
+  '.activo_noCirculante': "Inversion",
+  '.pasivo_cortoPlazo': "Operacion",
+  '.pasivo_largoPlazo': "Financiamiento",
+  '.capital': "Capital"
+};
+
+let cuentasUtilidadEjercicio = [
+
+];
+
 // ----------------- Funciones de actualización DOM -----------------
 
 // Renderiza (append) una fila en el tbody asociado a `tipo`
@@ -392,6 +419,7 @@ function updateAllTotalsDOM() {
   put('.total_pasivo_patrimonio_final',  totalPyPFinal);
 }
 
+
 // ----------------- Conexión con UI: listeners para botones -----------------
 
 // array paralelo de tipos (indice corresponde a agregaButtons y selects)
@@ -446,6 +474,40 @@ agregaButtons.forEach((btnSelector, idx) => {
 
     balance.addMovimiento(mov);
 
+
+
+    // ---- Guardar también en el arreglo para Flujo ----
+    const tipoFlujo = tipoFlujoMap[tipo];  // Operación | Inversión | Financiamiento | Capital
+    const registroFlujo = {
+      cuenta: mov.cuenta,
+      tipo: tipoFlujo,
+      variacion: mov.variacion
+    };
+
+
+
+    // Asignamos según el tipo
+    switch (tipo) {
+      case '.activo_circulante':
+        arrActivosCirculantes.push(registroFlujo);
+        break;
+      case '.activo_noCirculante':
+        arrActivosNoCirculantes.push(registroFlujo);
+        break;
+      case '.pasivo_cortoPlazo':
+        arrPasivoCortoPlazo.push(registroFlujo);
+        break;
+      case '.pasivo_largoPlazo':
+        arrPasivoLargoPlazo.push(registroFlujo);
+        break;
+      case '.capital':
+        arrCapitalFlujo.push(registroFlujo);
+        break;
+    }
+
+    console.table(arrActivosCirculantes);
+
+
     // Render en DOM
     renderRowForMovimiento(mov);
 
@@ -470,3 +532,159 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Puedes añadir una función que lea filas existentes en los tbody y llene el model.
 // function scanExistingRowsAndPopulateBalance() { ... } // opcional
+
+
+// *****************************************************ESTADO DE RESULTADOS ***************************************************************
+
+  let utilidadAntesImpuestosVal = 0;
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Formatting helper
+  function fmt(num) {
+    return num.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+  }
+
+  // State
+  let gastos = [];
+
+  // DOM refs
+  const refs = {
+    ventas: document.getElementById('ventas'),
+    invInicial: document.getElementById('invInicial'),
+    compras: document.getElementById('compras'),
+    invFinal: document.getElementById('invFinal'),
+    mercDisp: document.getElementById('mercDisp'),
+    costoVendido: document.getElementById('costoVendido'),
+    utilidadBruta: document.getElementById('utilidadBruta'),
+    tablaGastos: document.getElementById('tablaGastos'),
+    tipoGasto: document.getElementById('tipoGasto'),
+    nombreGasto: document.getElementById('nombreGasto'),
+    montoGasto: document.getElementById('montoGasto'),
+    btnAgregarGasto: document.getElementById('btnAgregarGasto'),
+    totalGastos: document.getElementById('totalGastos'),
+    utilidadOperacion: document.getElementById('utilidadOperacion'),
+    gastosFinancieros: document.getElementById('gastosFinancieros'),
+    gastosNoOperacionales: document.getElementById('gastosNoOperacionales'),
+    utilidadAntesImpuestoReserva: document.getElementById('utilidadAntesImpuestoReserva'),
+    reservaLegalInput: document.getElementById('reservaLegalInput'),
+    reserva: document.getElementById('reserva'),
+    utilidadAntesImpuestos: document.getElementById('utilidadAntesImpuestos')
+  };
+
+  // Ensure all refs exist
+  for (const [k, v] of Object.entries(refs)) {
+    if (!v) console.warn('Missing DOM ref:', k);
+  }
+
+  function renderGastos() {
+    refs.tablaGastos.innerHTML = '';
+    gastos.forEach((g, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${g.nombre} (${g.tipo})</td><td>${fmt(g.monto)}</td><td><button class="btn" data-index="${i}">X</button></td>`;
+      refs.tablaGastos.appendChild(tr);
+    });
+    // attach delete listeners
+    refs.tablaGastos.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = Number(btn.getAttribute('data-index'));
+        gastos.splice(idx, 1);
+        renderGastos();
+        calcular();
+      });
+    });
+  }
+
+  function agregarGasto() {
+    const tipo = refs.tipoGasto.value;
+    const nombre = refs.nombreGasto.value.trim();
+    const monto = parseFloat(refs.montoGasto.value);
+    if (!nombre || isNaN(monto)) return alert('Completa los datos del gasto');
+    gastos.push({ tipo, nombre, monto });
+    refs.nombreGasto.value = '';
+    refs.montoGasto.value = '';
+    renderGastos();
+    calcular();
+  }
+
+  refs.btnAgregarGasto.addEventListener('click', agregarGasto);
+
+  // Recalculate on relevant input changes
+  [refs.ventas, refs.invInicial, refs.compras, refs.invFinal, refs.gastosFinancieros, refs.gastosNoOperacionales, refs.reservaLegalInput].forEach(el => {
+    if (el) el.addEventListener('input', calcular);
+  });
+
+
+
+  function calcular() {
+    const ventas = Number(refs.ventas.value) || 0;
+    const invI = Number(refs.invInicial.value) || 0;
+    const compras = Number(refs.compras.value) || 0;
+    const invF = Number(refs.invFinal.value) || 0;
+
+    const mercDispVal = invI + compras;
+    const costoV = mercDispVal - invF;
+
+    const totalG = gastos.reduce((acc, g) => acc + g.monto, 0);
+
+    const utilidadBrutaVal = ventas - costoV;
+    const utilidadOperacionVal = utilidadBrutaVal - totalG;
+
+    const gastosFin = Number(refs.gastosFinancieros.value) || 0;
+    const gastosNoOp = Number(refs.gastosNoOperacionales.value) || 0;
+
+    const utilidadAntesIRVal = utilidadOperacionVal - gastosFin - gastosNoOp;
+
+    const reservaVal = Number(refs.reservaLegalInput.value) || 0;
+    utilidadAntesImpuestosVal = utilidadAntesIRVal - reservaVal;
+
+    utilidadAntesImpuestosVal = utilidadAntesImpuestosVal;
+
+   
+
+    // Update DOM safely (check existence)
+    if (refs.mercDisp) refs.mercDisp.innerText = fmt(mercDispVal);
+    if (refs.costoVendido) refs.costoVendido.innerText = fmt(costoV);
+    if (refs.utilidadBruta) refs.utilidadBruta.innerText = fmt(utilidadBrutaVal);
+    if (refs.totalGastos) refs.totalGastos.innerText = fmt(totalG);
+    if (refs.utilidadOperacion) refs.utilidadOperacion.innerText = fmt(utilidadOperacionVal);
+    if (refs.utilidadAntesImpuestoReserva) refs.utilidadAntesImpuestoReserva.innerText = fmt(utilidadAntesIRVal);
+    if (refs.reserva) refs.reserva.innerText = fmt(reservaVal);
+    if (refs.utilidadAntesImpuestos) refs.utilidadAntesImpuestos.innerText = fmt(utilidadAntesImpuestosVal);
+  }
+
+  // Initial calculation
+  calcular();
+    
+  });
+
+  
+  const utilidadEjercicio = document.querySelector('.utilidad_ejercicio_view');
+
+let flujoButton = document.querySelector('.generar_flujo_button');
+flujoButton.addEventListener('click', () => {
+    cuentasUtilidadEjercicio.length = 0;
+
+    // Aquí ya NO marca error
+    cuentasUtilidadEjercicio.push(utilidadAntesImpuestosVal);
+
+    mostrarCuentasUtilidad();
+});
+
+
+function mostrarCuentasUtilidad() {
+  utilidadEjercicio.innerHTML = ""; // limpiamos el view
+
+  cuentasUtilidadEjercicio.forEach(item => {
+    const div = document.createElement("div");
+
+    if (typeof item === "object") {
+      div.textContent = `${item.cuenta}: ${item.monto}`;
+    } else {
+      div.textContent = item; // utilidad del ejercicio
+    }
+
+    utilidadEjercicio.appendChild(div);
+  });
+}

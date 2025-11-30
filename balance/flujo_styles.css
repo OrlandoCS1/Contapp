@@ -1,0 +1,35 @@
+.title_flujo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.flujo{
+    border: 1px solid black;
+    width: 100%;
+}
+
+.flujo_divider{
+    background: linear-gradient(to left, #009966, #00bb7c);
+    border: 1px solid black;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px;
+}
+
+.utilidad_ejercicio_header{
+    background: linear-gradient(to left, #00996646, #00bb7d42);
+    padding: 10px;
+}
+
+.utilidad_ejercicio_view{
+    border: 1px solid black;
+}
+
+.generar_flujo_button{
+ background: linear-gradient(to left, #009966, #00bb7c);
+    padding: 12px;
+    color: white;
+}
