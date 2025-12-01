@@ -1,12 +1,15 @@
 <?php
 $host = "localhost";
 $usuario = "root";
-$password = "1503";
-$baseDatos = "contapp";
+$clave = "1503"; // si pusiste contraseña, ponla aquí
+$puerto = 3307;
+$bd = "contapp";
 
-$conexion = new mysqli($host, $usuario, $password, $baseDatos);
+$conexion = new mysqli($host, $usuario, $clave, $bd, $puerto);
 
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
+
+echo "Conectado correctamente a MariaDB!";
 ?>

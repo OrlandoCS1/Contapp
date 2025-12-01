@@ -968,3 +968,24 @@ function calcularAumentoDisminucionNeto() {
 
   return total;
 }
+
+
+
+const botonGuardar = document.querySelector(".save_button");
+
+botonGuardar.addEventListener("click", () => {
+    const htmlContent = document.querySelector(".formato").outerHTML;
+
+    fetch("http://localhost/CONTAPP/Contapp/balance/guardar_html.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "html=" + encodeURIComponent(htmlContent)
+    })
+    .then(r => r.text())
+    .then(r => {
+        console.log(r);
+        alert("Guardado en la base de datos ✔");
+    });
+});
