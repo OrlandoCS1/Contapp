@@ -2,7 +2,7 @@
 const vistas = [
     document.querySelector('.formato'), // Balance
     document.querySelector('.estado'),  // Estado Resultados
-    document.querySelector('.flujo')    // Flujo Efectivo
+    document.querySelector('.flujo_container')    // Flujo Efectivo
 ];
 
 let indiceVista = 0; // Inicia en Balance General (vista 0)

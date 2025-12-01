@@ -464,48 +464,67 @@ agregaButtons.forEach((btnSelector, idx) => {
     const anioFinal  = parseNumberFromText(rawFinal);
 
     // Crear movimiento y agregar al model
-    const mov = new Movimiento({
-      cuenta,
-      anioInicio,
-      anioFinal,
-      tipo,
-      subtipo: tipo.startsWith('.activo') ? 'activo' : (tipo.startsWith('.pasivo') ? 'pasivo' : 'capital')
-    });
+   // Crear movimiento y agregar al BALANCE GENERAL (esto siempre debe ocurrir)
+const mov = new Movimiento({
+  cuenta,
+  anioInicio,
+  anioFinal,
+  tipo,
+  subtipo: tipo.startsWith('.activo') ? 'activo' :
+           (tipo.startsWith('.pasivo') ? 'pasivo' : 'capital')
+});
 
-    balance.addMovimiento(mov);
+balance.addMovimiento(mov);  // 🎯 SIEMPRE AGREGAR AL BALANCE
+
+const esActivo = tipo.startsWith('.activo');
+
+const registroFlujo = {
+  cuenta: mov.cuenta,
+  tipo: tipoFlujoMap[tipo],
+  variacion: esActivo ? mov.variacion * -1 : mov.variacion
+};
+
+// 🚫 LISTA DE CUENTAS QUE NO VAN AL FLUJO
+const cuentasExcluidas = [
+  "efectivo",
+  "efectivo y equivalentes",
+  "equivalentes de efectivo"
+];
+
+const esExcluida = cuentasExcluidas.some(c =>
+  mov.cuenta.trim().toLowerCase().includes(c)
+);
 
 
 
-    // ---- Guardar también en el arreglo para Flujo ----
-    const tipoFlujo = tipoFlujoMap[tipo];  // Operación | Inversión | Financiamiento | Capital
-    const registroFlujo = {
-      cuenta: mov.cuenta,
-      tipo: tipoFlujo,
-      variacion: mov.variacion
-    };
+// ------------- ASIGNACIÓN PARA EL FLUJO -------------------
+switch (tipo) {
+  case '.activo_circulante':
+    if (!esExcluida) arrActivosCirculantes.push(registroFlujo);
+    break;
+
+  case '.activo_noCirculante':
+    arrActivosNoCirculantes.push(registroFlujo);
+    break;
+
+  case '.pasivo_cortoPlazo':
+    arrPasivoCortoPlazo.push(registroFlujo);
+    break;
+
+  case '.pasivo_largoPlazo':
+    arrPasivoLargoPlazo.push(registroFlujo);
+    break;
+
+  case '.capital':
+    arrCapitalFlujo.push(registroFlujo);
+    break;
+}
+
+console.log("Balance actualizado con:", mov);
+console.log("Flujo actualizado:", arrActivosCirculantes);
 
 
-
-    // Asignamos según el tipo
-    switch (tipo) {
-      case '.activo_circulante':
-        arrActivosCirculantes.push(registroFlujo);
-        break;
-      case '.activo_noCirculante':
-        arrActivosNoCirculantes.push(registroFlujo);
-        break;
-      case '.pasivo_cortoPlazo':
-        arrPasivoCortoPlazo.push(registroFlujo);
-        break;
-      case '.pasivo_largoPlazo':
-        arrPasivoLargoPlazo.push(registroFlujo);
-        break;
-      case '.capital':
-        arrCapitalFlujo.push(registroFlujo);
-        break;
-    }
-
-    console.table(arrActivosCirculantes);
+    console.table(arrActivosNoCirculantes);
 
 
     // Render en DOM
@@ -661,30 +680,291 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
   const utilidadEjercicio = document.querySelector('.utilidad_ejercicio_view');
+  const activoCirculanteFlujoView = document.querySelector('.activos_circulantes_view');
+  const pasivoCortoPlazoFlujoView = document.querySelector('.pasivos_cortoPlazo_view');
+  
+
+  const totalActivoCirculanteFlujo = document.querySelector('#suma_activo_circulante');
+  const totalPsivoCortoPlazo = document.querySelector('#suma_pasivo_cortoPlazo');
+  const sumaPasivoActivoCorriente = document.querySelector('#suma_activo_pasivo_corriente');
+
+  const flujoOperacionNeto = document.querySelector('#flujo_operacion_neto'); //SUMA DE UTILIDAD, DEPRECIACION Y TOTAL DE ACTIVO_PASIVO CORRIENTE
+
+  const activoNoCirculanteFlujoView = document.querySelector('.activo_no_circulante_view');
+  const flujoInversionNeto = document.querySelector('.flujo_inversion_neto');
+  
+  const pasivoLargoPlazoFlujoView = document.querySelector('.pasivo_largoPlazo_view');
+  const flujoFinanciamientoNeto = document.querySelector('.flujo_financiamiento_neto');
+
+  const aumentoDisminucionNeto = document.querySelector('.aumento_disminución_neto_efectivo_ejecicio');
 
 let flujoButton = document.querySelector('.generar_flujo_button');
+
+
+
+
+
 flujoButton.addEventListener('click', () => {
+    
+    // Reset utilidad
     cuentasUtilidadEjercicio.length = 0;
 
-    // Aquí ya NO marca error
-    cuentasUtilidadEjercicio.push(utilidadAntesImpuestosVal);
+    // 1) Depreciación
+    let depreciacion = 0;
+    arrActivosNoCirculantes.forEach((item) => {
+        if (item.cuenta === "Depreciación acumulada") {
+            depreciacion = Math.abs(item.variacion);
+        }
+    });
+    cuentasUtilidadEjercicio.push(depreciacion);
+
+    // 2) Utilidad ajustada
+    cuentasUtilidadEjercicio.push(Math.abs(utilidadAntesImpuestosVal));
 
     mostrarCuentasUtilidad();
+
+    // 3) Mostrar activos circulantes
+    mostrarCuentasActivoCirculante();
+
+    // 4) Mostrar pasivos corto plazo
+    mostrarCuentasPasivoCorto();
+
+    // 5) Calcular totales
+    calcularTotalActivoCirculante();
+    calcularTotalPasivoCortoPlazo();
+    calcularSumaActivoPasivoCorriente();
+
+    // 6) Flujo de operación neto
+    calcularFlujoOperacionNeto();
+
+    // 7) Mostrar inversión
+    mostrarCuentasActivoNoCirculante();
+
+    // 8) Mostrar financiamiento
+    mostrarCuentasPasivoLargoPlazo();
+
+    // 9) Calcular flujos netos
+    calcularFlujoInversionNeto();
+    calcularFlujoFinanciamientoNeto();
+
+    // 10) Aumento o disminución neto
+    calcularAumentoDisminucionNeto();
+
 });
 
 
+
+
+const cuentasUtilidadLabels = [
+    'Depreciación',
+    'Utilidad ajustada'
+];
+
+
 function mostrarCuentasUtilidad() {
-  utilidadEjercicio.innerHTML = ""; // limpiamos el view
+  utilidadEjercicio.innerHTML = "";
 
-  cuentasUtilidadEjercicio.forEach(item => {
-    const div = document.createElement("div");
+  cuentasUtilidadEjercicio.forEach((item, index) => {
+    const tr = document.createElement("tr");
 
-    if (typeof item === "object") {
-      div.textContent = `${item.cuenta}: ${item.monto}`;
+    const tdCuenta = document.createElement('td');
+    const tdVariacion = document.createElement('td');
+
+    tdVariacion.className = "cuentaUtilidadDelEjercicio";
+
+    tdCuenta.textContent = cuentasUtilidadLabels[index];
+    tdVariacion.textContent = formateador.format(item);
+
+    tr.appendChild(tdCuenta);
+    tr.appendChild(tdVariacion);
+
+    utilidadEjercicio.appendChild(tr);
+  });
+}
+
+
+
+function mostrarCuentasActivoCirculante() {
+  arrActivosCirculantes.forEach((item) => {
+    if(item.cuenta != 'Depreciación acumulada'){
+      const div = document.createElement("tr");
+      const cuentaSlot = document.createElement('td');
+      const variacion = document.createElement('td');
+
+      variacion.className = "cuentaActivosCirculantes";
+
+      cuentaSlot.innerText = item.cuenta;
+      variacion.innerText = item.variacion;
+
+      div.appendChild(cuentaSlot);
+      div.appendChild(variacion);
+
+      activoCirculanteFlujoView.appendChild(div);
     } else {
-      div.textContent = item; // utilidad del ejercicio
+      console.log("looool")
+    }
+  })
+}
+
+
+function mostrarCuentasPasivoCorto() {
+  pasivoCortoPlazoFlujoView.innerHTML = "";
+
+  arrPasivoCortoPlazo.forEach((item) => {
+    const tr = document.createElement("tr");
+    const tdCuenta = document.createElement('td');
+    const tdVariacion = document.createElement('td');
+
+    tdVariacion.className = "cuentaPasivosCorto";
+
+    tdCuenta.innerText = item.cuenta;
+    tdVariacion.innerText = formateador.format(item.variacion);
+
+    tr.appendChild(tdCuenta);
+    tr.appendChild(tdVariacion);
+
+    pasivoCortoPlazoFlujoView.appendChild(tr);
+  });
+}
+
+
+
+
+function calcularTotalActivoCirculante(){
+  let sumatoria = 0;
+
+  arrActivosCirculantes.forEach((item) => {
+    sumatoria += Number(item.variacion);
+  });
+
+  totalActivoCirculanteFlujo.textContent = formateador.format(sumatoria);
+
+  return sumatoria;
+}
+
+function calcularTotalPasivoCortoPlazo(){
+  let sumatoria = 0;
+
+  arrPasivoCortoPlazo.forEach((item) => {
+    sumatoria += Number(item.variacion);
+  });
+
+  totalPsivoCortoPlazo.textContent = formateador.format(sumatoria);
+
+  return sumatoria;
+}
+
+function calcularSumaActivoPasivoCorriente(){
+  const totalAC = calcularTotalActivoCirculante();
+  const totalPC = calcularTotalPasivoCortoPlazo();
+
+  const total = totalAC + totalPC;
+
+  sumaPasivoActivoCorriente.textContent = formateador.format(total);
+
+  return total;
+}
+
+
+function calcularFlujoOperacionNeto(){
+  const totalUtilidad = cuentasUtilidadEjercicio.reduce((acc, val) => acc + Number(val), 0);
+  const variacionesCorriente = calcularSumaActivoPasivoCorriente();
+
+  const total = totalUtilidad + variacionesCorriente;
+
+  flujoOperacionNeto.textContent = formateador.format(total);
+
+  return total;
+}
+
+
+
+function mostrarCuentasActivoNoCirculante() {
+  activoNoCirculanteFlujoView.innerHTML = "";
+
+  arrActivosNoCirculantes.forEach((item) => {
+
+    // Excluir depreciación acumulada
+    if (!item.cuenta.toLowerCase().startsWith("depreciación")) {
+
+      const tr = document.createElement("tr");
+      const tdCuenta = document.createElement("td");
+      const tdVariacion = document.createElement("td");
+
+      tdVariacion.className = "cuentaActivoNoCirculante";
+
+      tdCuenta.innerText = item.cuenta;
+      tdVariacion.innerText = formateador.format(item.variacion);
+
+      tr.appendChild(tdCuenta);
+      tr.appendChild(tdVariacion);
+      activoNoCirculanteFlujoView.appendChild(tr);
+    }
+  });
+}
+
+
+
+function calcularFlujoInversionNeto() {
+  let total = 0;
+
+  arrActivosNoCirculantes.forEach((item) => {
+
+    // Excepción: NO sumar depreciación acumulada
+    if (!item.cuenta.toLowerCase().startsWith("depreciación")) {
+      total += Number(item.variacion);
     }
 
-    utilidadEjercicio.appendChild(div);
   });
+
+  flujoInversionNeto.textContent = formateador.format(total);
+
+  return total;
+}
+
+
+function mostrarCuentasPasivoLargoPlazo() {
+  pasivoLargoPlazoFlujoView.innerHTML = "";
+
+  arrPasivoLargoPlazo.forEach((item) => {
+    const tr = document.createElement("tr");
+    const tdCuenta = document.createElement("td");
+    const tdVariacion = document.createElement("td");
+
+    tdVariacion.className = "cuentaPasivoLargo";
+
+    tdCuenta.innerText = item.cuenta;
+    tdVariacion.innerText = formateador.format(item.variacion);
+
+    tr.appendChild(tdCuenta);
+    tr.appendChild(tdVariacion);
+
+    pasivoLargoPlazoFlujoView.appendChild(tr);
+  });
+}
+
+
+function calcularFlujoFinanciamientoNeto() {
+  let total = 0;
+
+  arrPasivoLargoPlazo.forEach((item) => {
+    total += Number(item.variacion);
+  });
+
+  flujoFinanciamientoNeto.textContent = formateador.format(total);
+
+  return total;
+}
+
+
+function calcularAumentoDisminucionNeto() {
+  const op = calcularFlujoOperacionNeto();
+  const inv = calcularFlujoInversionNeto();
+  const fin = calcularFlujoFinanciamientoNeto();
+
+  const total = op + inv + fin;
+
+  aumentoDisminucionNeto.textContent = formateador.format(total);
+
+  return total;
 }

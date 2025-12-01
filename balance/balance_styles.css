@@ -24,7 +24,8 @@
     width: 100%;
     height: auto;
     border-radius: 20px;
-    border: 2px solid rgb(0, 0, 0);
+    --border: 2px solid rgb(0, 0, 0);
+    box-shadow: 2px 2px 10px rgba(128, 128, 128, 0.5)
 
 }
 
@@ -227,11 +228,39 @@
 --gris-oscuro: #333;
 }
 
+.estado_title{
+    background: linear-gradient(to left, #009966, #00bb7c);
+    color: white;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    display: flex;
+    align-self: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
+.estado_title h1 {
+    color: white;
+
+}
+
+.estado_title p{
+    color: white;
+    display: flex;
+    align-self: center;
+}
+
+
 .estado{
-    background: var(--gris-claro);
+    --background: var(--gris-claro);
     margin: 0;
     padding: 20px;
     color: var(--gris-oscuro);
+    width: 100%;
 }
 
 .title_estado{
@@ -249,7 +278,7 @@
     width: 100%;
     background: white;
     border-collapse: collapse;
-    border-radius: 10px;
+    --border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
@@ -269,7 +298,7 @@
     width: 120px;
     padding: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+
 }
 
 .table_estado select {
